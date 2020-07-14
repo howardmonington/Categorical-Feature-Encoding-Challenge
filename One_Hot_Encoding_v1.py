@@ -94,6 +94,7 @@ submission = pd.DataFrame(IDs, columns = ['id'])
 submission['target'] = pred
 submission.head()
 submission.to_csv('submission_one_hot_encoding_v2.csv', index = False)
+# pd.get_dummies
 
 
 

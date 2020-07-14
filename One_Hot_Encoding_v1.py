@@ -95,7 +95,7 @@ submission['target'] = pred
 submission.head()
 path = r'C:\Users\lukem\Desktop\Github AI Projects'
 submission.to_csv('submission_one_hot_encoding_v3.csv', index = False)
-# OneHotEncoder
+# OneHotEncoder is the best
 
 
 

@@ -58,8 +58,13 @@ frames = [X, test]
 result = pd.concat(frames)
 result.shape
 
-# Get dummies
-other_result = pd.get_dummies(result, columns = result.columns, sparse = False)
+# Label Encoder
+le = LabelEncoder()
+result['bin_3'] = le.fit_transform(result['bin_3'])
+result['bin_4'] = le.fit_transform(result['bin_4'])
+print(result['bin_4'])
+result.shape
+
 
 # Get Shape of resulting matrix after getting dummies
 other_result.shape

@@ -54,19 +54,26 @@ def logistic(X, y):
     print('Accuracy : ' , accuracy_score(y_test, pred))
     
 # One Hot Encoding
-frames = [X, test]
-result = pd.concat(frames)
-result.shape
+train_test_list = [X, test]
+train_test_df = pd.concat(train_test_list)
+train_test_df.shape
+
+cat_cols = ['bin_3','bin_4','nom_0','nom_1','nom_2','nom_3','nom_4','nom_5','nom_6','ord_0','ord_1','ord_2','ord_3','ord_4','ord_5']
+
+dummy_df = train_test_df[cat_cols]
+train_test_df = train_test_df.drop(cat_cols, axis = 1)
 
 # Get dummies
-other_result = pd.get_dummies(result, columns = result.columns, sparse = False)
+dummy_df = pd.get_dummies(dummy_df, sparse = False)
 
-# Get Shape of resulting matrix after getting dummies
-other_result.shape
+# Recombine dataframes
+recombined_list = [train_test_df, dummy_df]
+train_test_dummies = pd.concat(recombined_list, axis = 1)
+
 
 # Split back into train and test matrices 
-train = other_result.iloc[0:300000,:]
-test = other_result.iloc[300000:,:]
+train = dummy_df.iloc[0:300000,:]
+test = dummy_df.iloc[300000:,:]
 
 # Cross Validation
 seed = 7
@@ -93,9 +100,11 @@ pred = model.predict(test)
 submission = pd.DataFrame(IDs, columns = ['id'])
 submission['target'] = pred
 submission.head()
-submission.to_csv('submission_one_hot_encoding_v2.csv', index = False)
+submission.to_csv('submission_one_hot_encoding_v3.csv', index = False)
 # pd.get_dummies
 
+path = r'C:\Users\lukem\Desktop\Github AI Projects\Submissions\ '
+submission.to_csv(path + 'updated_one_hot_encoding_v3.csv', index = False)
 
 
 

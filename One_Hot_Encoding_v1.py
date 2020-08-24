@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.feature_extraction import FeatureHasher
 from sklearn.model_selection import train_test_split
 pd.set_option('max_columns', None)
-import xgboost
+import xgboost as xgb
 from xgboost import XGBClassifier
 
 # Get train and test dataset
@@ -25,15 +25,37 @@ IDs = df_test['id']
 
 print("Training set shape: {} \nTest set shape: {}".format(X.shape, test.shape))
 
+for f in X.columns:
+    if X[f].dtype == "object" or test[f].dtype == "object":
+        lr = LabelEncoder()
+        lr.fit(list(X[f]) + list(test[f]))
+        X[f] = lr.transform(X[f])
+        test[f] = lr.transform(test[f])
+        
+        
+clf = xgb.XGBClassifier(
+    n_estimators=500,
+    max_depth=9,
+    learning_rate=0.05,
+    subsample=0.9,
+    colsample_bytree=0.9,
+    missing=-999,
+    random_state=2019,
+    tree_method='gpu_hist'  # THE MAGICAL PARAMETER
+)
+%time clf.fit(X, y)
 
+pred = clf.predict(test)
+    
 
 # Creating submission csv file
 submission = pd.DataFrame(IDs, columns = ['id'])
 submission['target'] = pred
 submission.head()
-submission.to_csv('submission_one_hot_encoding_v2.csv', index = False)
-# pd.get_dummies
 
+# pd.get_dummies
+path = r'C:\Users\lukem\Desktop\Github AI Projects\Submissions\Cat Feature Encoding Challenge\ '
+submission.to_csv(path + 'submission v1.csv', index = False)
 
 
 

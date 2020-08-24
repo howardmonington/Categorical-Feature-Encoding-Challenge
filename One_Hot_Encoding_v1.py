@@ -11,11 +11,14 @@ from sklearn.model_selection import train_test_split
 pd.set_option('max_columns', None)
 import xgboost
 from xgboost import XGBClassifier
+from imblearn.over_sampling import RandomOverSampler
 
 # Get train and test dataset
 df_train = pd.read_csv('C:/Users/lukem/Desktop/AI Projects/Categorical Feature Encoding Challenge/train.csv')
 df_test = pd.read_csv('C:/Users/lukem/Desktop/AI Projects/Categorical Feature Encoding Challenge/test.csv')
+sample_submission = pd.read_csv(r'C:\Users\lukem\Desktop\AI Projects\Categorical Feature Encoding Challenge\sample_submission.csv')
 
+sample_submission.head()
 # Set up our X and y for our training set
 X = df_train.drop(columns=['id', 'target'])
 y = df_train['target']
@@ -91,7 +94,7 @@ ord_5_dictionary = {'ac':1,'av':2,'be':3,'ck':4,'cp':5,'dh':6,'eb':7,'eg':8,'ek'
 'TR':185,'TZ':186,'UO':187,'WE':188,'XI':189,'YC':190,'ZR':191,'ZS':192}
 train_test_df['ord_5'] = train_test_df['ord_5'].map(ord_5_dictionary)
 
-cat_cols = ['nom_0','nom_1','nom_2','nom_3','nom_4','nom_5','nom_6','ord_0','ord_1','ord_2','ord_3','ord_4','ord_5']
+cat_cols = ['nom_0','nom_1','nom_2','nom_3','nom_4','nom_5','nom_6','ord_3','ord_4','ord_5']
 
 dummy_df = train_test_df[cat_cols]
 train_test_df = train_test_df.drop(cat_cols, axis = 1)
@@ -113,11 +116,39 @@ seed = 7
 test_size = 0.2
 X_train, X_test, y_train, y_test = train_test_split(train, y, test_size=test_size, random_state=seed)
 
+# oversample
+oversample = RandomOverSampler(sampling_strategy='minority')
+X_over, y_over = oversample.fit_resample(X_train, y_train)
+
 X_train = scipy.sparse.csr_matrix(X_train)
 
 # Using data to train AI
-model = XGBClassifier()
+model = XGBClassifier(
+    learning_rate = 0.1,
+    n_estimators = 500,
+    max_depth = 7,
+    min_child_weight = 0.5)
+
 model.fit(X_train, y_train)
+X_test = scipy.sparse.csr_matrix(X_test)
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy: %.2f%%" % (accuracy * 100.0))
+
+
+xgb2 = XGBClassifier(
+ learning_rate =0.1,
+ n_estimators=1000,
+ max_depth=5,
+ min_child_weight=1,
+ gamma=0,
+ subsample=0.8,
+ colsample_bytree=0.8,
+ objective= 'binary:logistic',
+ nthread=4,
+ scale_pos_weight=1,
+ seed=27)
+xgb2.fit(X_train, y_train)
 
 # Testing accuracy of AI model
 X_test = scipy.sparse.csr_matrix(X_test)
@@ -127,7 +158,7 @@ print("Accuracy: %.2f%%" % (accuracy * 100.0))
 
 # Using model to predict test data
 test = scipy.sparse.csr_matrix(test)
-pred = model.predict(test)
+
 
 # Creating submission csv file
 submission = pd.DataFrame(IDs, columns = ['id'])
@@ -137,7 +168,7 @@ submission.to_csv('submission_one_hot_encoding_v3.csv', index = False)
 # pd.get_dummies
 
 path = r'C:\Users\lukem\Desktop\Github AI Projects\Submissions\ '
-submission.to_csv(path + 'updated_one_hot_encoding_v3.csv', index = False)
+submission.to_csv(path + 'xgb_submission_v6.csv', index = False)
 
 
 

@@ -52,6 +52,9 @@ X_train, X_val, y_train, y_val = train_test_split(X, y, test_size = 0.2)
 perm = PermutationImportance(clf, random_state=1).fit(X_val, y_val)
 # Store feature weights in an object
 html_obj = eli5.show_weights(perm, feature_names = X_val.columns.tolist())
+with open(r'C:\Users\lukem\Desktop\Github AI Projects\Categorical-Feature-Encoding-Challenge\cat-feature-importance.htm','wb') as f:
+    f.write(html_obj.data.encode("UTF-8"))
+
 
 pred = clf.predict(test)
     

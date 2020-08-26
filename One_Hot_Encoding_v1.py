@@ -11,6 +11,8 @@ from sklearn.model_selection import train_test_split
 pd.set_option('max_columns', None)
 import xgboost as xgb
 from xgboost import XGBClassifier
+import eli5
+from eli5.sklearn import PermutationImportance
 
 # Get train and test dataset
 df_train = pd.read_csv('C:/Users/lukem/Desktop/AI Projects/Categorical Feature Encoding Challenge/train.csv')
@@ -43,7 +45,13 @@ clf = xgb.XGBClassifier(
     random_state=2019,
     tree_method='gpu_hist'  # THE MAGICAL PARAMETER
 )
-%time clf.fit(X, y)
+
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size = 0.2)
+%time clf.fit(X_train, y_train)
+
+perm = PermutationImportance(clf, random_state=1).fit(X_val, y_val)
+# Store feature weights in an object
+html_obj = eli5.show_weights(perm, feature_names = X_val.columns.tolist())
 
 pred = clf.predict(test)
     

@@ -13,6 +13,8 @@ import xgboost as xgb
 from xgboost import XGBClassifier
 import eli5
 from eli5.sklearn import PermutationImportance
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
 # Get train and test dataset
 df_train = pd.read_csv('C:/Users/lukem/Desktop/AI Projects/Categorical Feature Encoding Challenge/train.csv')
@@ -55,6 +57,14 @@ html_obj = eli5.show_weights(perm, feature_names = X_val.columns.tolist())
 with open(r'C:\Users\lukem\Desktop\Github AI Projects\Categorical-Feature-Encoding-Challenge\cat-feature-importance.htm','wb') as f:
     f.write(html_obj.data.encode("UTF-8"))
 
+cm = confusion_matrix(y_val, clf.predict(X_val))
+print("The number of true positives is {}\nThe number of false positives is {}".format(cm[0,0], cm[0,1]))
+print("The number of true negatives is {}\nThe number of false negatives is {}".format(cm[1,1], cm[1,0]))
+
+# visualize confusion matrix with seaborn heatmap
+cm_matrix = pd.DataFrame(data=cm, columns=['Actual Positive:1', 'Actual Negative:0'], 
+                                 index=['Predict Positive:1', 'Predict Negative:0'])
+sns.heatmap(cm_matrix, annot=True, fmt='d', cmap='YlGnBu')
 
 pred = clf.predict(test)
     

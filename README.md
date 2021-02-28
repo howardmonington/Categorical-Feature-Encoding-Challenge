@@ -30,7 +30,7 @@ This project presented the challenge of encoding various different types of feat
 I worked differently with each of these types of features in order to perform feature engineering. Finally, I tested various different types of algorithms using 5 fold cross validation in order to find the best performing model.
 
 ### Dataset Location
-The Raw Data can be found [here](https://www.kaggle.com/c/dont-overfit-ii)
+The Raw Data can be found [here](https://www.kaggle.com/c/cat-in-the-dat)
 
 ## Featured Notebooks/Analysis/Deliverables
 * [Notebook](https://github.com/lukemonington/Categorical-Feature-Encoding-Challenge/blob/master/categorical-feature-encoding-challenge.ipynb)

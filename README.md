@@ -32,3 +32,14 @@ I worked differently with each of these types of features in order to perform fe
 
 ### Dataset Location
 The Raw Data can be found [here](https://www.kaggle.com/c/dont-overfit-ii)
+
+## Featured Notebooks/Analysis/Deliverables
+* [Notebook](https://github.com/lukemonington/Categorical-Feature-Encoding-Challenge/blob/master/categorical-feature-encoding-challenge.ipynb)
+
+
+## Contributing Members
+
+**[Luke Monington](https://github.com/lukemonington)**
+
+## Contact
+* I can be reached at lukemonington@aol.com.
